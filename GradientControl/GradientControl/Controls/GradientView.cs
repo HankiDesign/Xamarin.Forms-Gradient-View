@@ -54,22 +54,58 @@ namespace GradientControl.Controls
 			{
 				new Gradient(new List<GradientStop>
 				{
-					new GradientStop(0, SKColor.Parse("#2c3e50"), 1),
-					new GradientStop(1, SKColor.Parse("#4ca1af"), 1)
+					new GradientStop(0, SKColor.Parse("#bdc3c7"), 1),
+					new GradientStop(1, SKColor.Parse("#2c3e50"), 1)
 				}),
 
 				new Gradient(new List<GradientStop>
 				{
-					new GradientStop(0, SKColor.Parse("#ff5f6d"), 1),
-					new GradientStop(1, SKColor.Parse("#ffc371"), 1)
+					new GradientStop(0, SKColor.Parse("#ee9ca7"), 1),
+					new GradientStop(1, SKColor.Parse("#ffdde1"), 1)
 				}),
 
 				new Gradient(new List<GradientStop>
 				{
-					new GradientStop(0, SKColor.Parse("#e96443"), 1),
-					new GradientStop(1, SKColor.Parse("#904e95"), 1)
+					new GradientStop(0, SKColor.Parse("#2193b0"), 1),
+					new GradientStop(1, SKColor.Parse("#6dd5ed"), 1)
 				}),
-			};
+
+                new Gradient(new List<GradientStop>
+                {
+                    new GradientStop(0, SKColor.Parse("#b92b27"), 1),
+                    new GradientStop(1, SKColor.Parse("#1565C0"), 1 ),
+                }),
+
+                new Gradient(new List<GradientStop>
+                {
+                    new GradientStop(0, SKColor.Parse("#373B44"), 1),
+                    new GradientStop(1, SKColor.Parse("#4286f4"), 1)
+                }),
+
+                new Gradient(new List<GradientStop>
+                {
+                    new GradientStop(0, SKColor.Parse("#FF0099"), 1),
+                    new GradientStop(1, SKColor.Parse("#493240"), 1)
+                }),
+
+                new Gradient(new List<GradientStop>
+                {
+                    new GradientStop(0, SKColor.Parse("#1f4037"), 1),
+                    new GradientStop(1, SKColor.Parse("#99f2c8"), 1)
+                }),
+
+                new Gradient(new List<GradientStop>
+                {
+                    new GradientStop(0, SKColor.Parse("#c31432"), 1),
+                    new GradientStop(1, SKColor.Parse("#240b36"), 1)
+                }),
+
+                new Gradient(new List<GradientStop>
+                {
+                    new GradientStop(0, SKColor.Parse("#659999"), 1),
+                    new GradientStop(1, SKColor.Parse("#f4791f"), 1)
+                }),
+            };
 
 			animationTimer = new Timer(1000 / (double)Fps);
 			animationTimer.Elapsed += AnimationTimer_Elapsed;
@@ -104,8 +140,12 @@ namespace GradientControl.Controls
 				counter = 0;
 			}
 
-			InvalidateSurface();
-			animationTimer.Start();
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                InvalidateSurface();
+            });
+
+            animationTimer.Start();
 		}
 
 		private void ResetAnimation()
