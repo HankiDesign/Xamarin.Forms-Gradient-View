@@ -130,7 +130,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\GradientControl\GradientControl.csproj">
-      <Project>{65087EC3-A197-4D5F-9BB8-0CF86BA3D95F}</Project>
+      <Project>{1720AC3F-050A-4333-986E-E10FFDDAA549}</Project>
       <Name>GradientControl</Name>
     </ProjectReference>
   </ItemGroup>

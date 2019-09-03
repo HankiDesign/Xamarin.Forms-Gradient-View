@@ -1,12 +1,28 @@
 ﻿using System.Collections.Generic;
+using GradientControl.ViewModel;
 
 namespace GradientControl.Controls
 {
-	public class Gradient
+	public class Gradient : BaseViewModel
     {
-		public List<GradientStop> Stops { get; set; }
+        private List<GradientStop> stops;
+        public List<GradientStop> Stops
+        {
+            get
+            {
+                return stops;
+            }
+            set
+            {
+                if (stops != value)
+                {
+                    stops = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
-	    public Gradient(List<GradientStop> stops)
+        public Gradient(List<GradientStop> stops)
 	    {
 		    Stops = new List<GradientStop>();
 		    Stops.AddRange(stops);
