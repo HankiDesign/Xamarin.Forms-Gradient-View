@@ -19,7 +19,7 @@ namespace GradientControl.Controls
 		private Gradient oldGradient;
 		private Gradient newGradient;
 
-		public static readonly BindableProperty GradientsProperty = BindableProperty.Create(nameof(Gradients), typeof(IList<Gradient>), typeof(GradientView));
+		public static readonly BindableProperty GradientsProperty = BindableProperty.Create(nameof(Gradients), typeof(IList<Gradient>), typeof(GradientView), propertyChanged: OnGradientsChanged);
 		public static readonly BindableProperty AnimatingProperty = BindableProperty.Create(nameof(Animating), typeof(bool), typeof(GradientView), true, propertyChanged: OnAnimatingChanged);
 		public static readonly BindableProperty FpsProperty = BindableProperty.Create(nameof(Fps), typeof(int), typeof(GradientView), 60, propertyChanged: OnFpsChanged);
 		public static readonly BindableProperty FramesPerTransitionProperty = BindableProperty.Create(nameof(FramesPerTransition), typeof(int), typeof(GradientView), 3000);
@@ -50,7 +50,7 @@ namespace GradientControl.Controls
 
 		public GradientView()
 		{
-			Gradients = new List<Gradient>
+            /*Gradients = new List<Gradient>
 			{
 				new Gradient(new List<GradientStop>
 				{
@@ -105,12 +105,11 @@ namespace GradientControl.Controls
                     new GradientStop(0, SKColor.Parse("#659999"), 1),
                     new GradientStop(1, SKColor.Parse("#f4791f"), 1)
                 }),
-            };
+            };*/
 
-			animationTimer = new Timer(1000 / (double)Fps);
+            Gradients = new List<Gradient>();
+            animationTimer = new Timer(1000 / (double)Fps);
 			animationTimer.Elapsed += AnimationTimer_Elapsed;
-			ResetAnimation();
-			StartAnimation();
 		}
 
 		private void AnimationTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -122,7 +121,7 @@ namespace GradientControl.Controls
 				currentStops.Add(LerpStop(oldGradient.Stops[i], newGradient.Stops[i], Math.Min((float)counter / FramesPerTransition, 1)));
 			}
 
-			colors = currentStops.Select(x => x.Color).ToArray();
+			colors = currentStops.Select(x => x.Color.ToSKColor()).ToArray();
 			locations = currentStops.Select(x => (float)x.Location).ToArray();
 
 			counter++;
@@ -150,15 +149,21 @@ namespace GradientControl.Controls
 
 		private void ResetAnimation()
 		{
-			index = 0;
-			oldGradient = Gradients[index];
-			newGradient = Gradients[index < Gradients.Count - 1 ? index + 1 : 0];
-			currentStops.Clear();
+            if (Gradients.Any())
+            {
+                index = 0;
+                oldGradient = Gradients[index];
+                newGradient = Gradients[index < Gradients.Count - 1 ? index + 1 : 0];
+                currentStops.Clear();
+            }
 		}
 
 		public void StartAnimation()
 		{
-			animationTimer.Start();
+            if (Gradients.Any())
+            {
+                animationTimer.Start();
+            }
 		}
 
 		public void StopAnimation()
@@ -178,13 +183,13 @@ namespace GradientControl.Controls
 			return new GradientStop(first.Location, LerpRGB(first.Color, second.Color, percentage), 1);
 		}
 
-		public static SKColor LerpRGB(SKColor a, SKColor b, float t)
+		public static Color LerpRGB(Color a, Color b, float t)
 		{
-			var r = a.Red + (b.Red - a.Red) * t ;
-			var g = a.Green + (b.Green - a.Green) * t;
-			var bl = a.Blue + (b.Blue - a.Blue) * t;
+			var r = a.R + (b.R- a.R) * t ;
+			var g = a.G + (b.G- a.G) * t;
+			var bl = a.B+ (b.B- a.B) * t;
 
-			return new SKColor
+			return new Color
 			(
 				Convert.ToByte(r),
 				Convert.ToByte(g),
@@ -215,7 +220,13 @@ namespace GradientControl.Controls
 			}
 		}
 
-		private static void OnAnimatingChanged(BindableObject bindable, object oldValue, object newValue)
+        private static void OnGradientsChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            ((GradientView)bindable).ResetAnimation();
+            ((GradientView)bindable).StartAnimation();
+        }
+
+        private static void OnAnimatingChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			if ((bool)newValue)
 			{

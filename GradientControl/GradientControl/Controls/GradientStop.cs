@@ -1,9 +1,10 @@
 ﻿using GradientControl.ViewModel;
 using SkiaSharp;
+using Xamarin.Forms;
 
 namespace GradientControl.Controls
 {
-	public struct GradientStop : BaseViewModel
+	public class GradientStop : BaseViewModel
     {
         private float location;
         public float Location
@@ -39,8 +40,8 @@ namespace GradientControl.Controls
             }
         }
 
-        private SKColor color;
-        public SKColor Color
+        private Color color;
+        public Color Color
         {
             get
             {
@@ -56,11 +57,16 @@ namespace GradientControl.Controls
             }
         }
 
-	    public GradientStop(float location, SKColor color, float opacity)
+	    public GradientStop(float location, Color color, float opacity)
 	    {
 			Location = location;
 			Color = color;
 			Opacity = opacity;
 	    }
+
+        public GradientStop()
+        {
+
+        }
     }
 }

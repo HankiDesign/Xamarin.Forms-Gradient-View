@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using GradientControl.ViewModel;
 
 namespace GradientControl.Controls
 {
 	public class Gradient : BaseViewModel
     {
-        private List<GradientStop> stops;
-        public List<GradientStop> Stops
+        private ObservableCollection<GradientStop> stops;
+        public ObservableCollection<GradientStop> Stops
         {
             get
             {
@@ -24,10 +25,13 @@ namespace GradientControl.Controls
 
         public Gradient(List<GradientStop> stops)
 	    {
-		    Stops = new List<GradientStop>();
-		    Stops.AddRange(stops);
+		    Stops = new ObservableCollection<GradientStop>();
+		    //Stops.AddRange(stops);
 	    }
 
-		public Gradient() { }
+		public Gradient()
+        {
+            Stops = new ObservableCollection<GradientStop>();
+        }
     }
 }
