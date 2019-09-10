@@ -3,54 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:GradientControl"
              xmlns:controls="clr-namespace:GradientControl.Controls;assembly=GradientControl"
-             xmlns:converters="clr-namespace:GradientControl.Converters"
              x:Class="GradientControl.MainPage">
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:SKColorConverter x:Key="SKColorConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
-    <Grid>
-        <controls:GradientView HorizontalOptions="FillAndExpand"
-                               VerticalOptions="FillAndExpand"
-                               Animating="{Binding IsAnimating}"    
-                               Fps="{Binding Fps}"
-                               FramesPerTransition="{Binding FramesPerTransition}">
-            <controls:GradientView.Gradients>
-                <controls:Gradient>
-                    <controls:Gradient.Stops>
-                        <controls:GradientStop Location="0" Color="#bdc3c7" />
-                        <controls:GradientStop Location="1" Color="#2c3e50" />
-                    </controls:Gradient.Stops>
-                </controls:Gradient>
-                <controls:Gradient>
-                    <controls:Gradient.Stops>
-                        <controls:GradientStop Location="0" Color="#ee9ca7" />
-                        <controls:GradientStop Location="1" Color="#ffdde1" />
-                    </controls:Gradient.Stops>
-                </controls:Gradient>
-                <controls:Gradient>
-                    <controls:Gradient.Stops>
-                        <controls:GradientStop Location="0" Color="#2193b0" />
-                        <controls:GradientStop Location="1" Color="#6dd5ed" />
-                    </controls:Gradient.Stops>
-                </controls:Gradient>
-            </controls:GradientView.Gradients>
-            </controls:GradientView>
-        <!--<StackLayout Orientation="Vertical">
-            <Label Text="Is Animating:"
-                   TextColor="White" />
-            <Switch IsToggled="{Binding IsAnimating}" />
-            <Label Text="Frames Per Second:"
-                   TextColor="White" />
-            <Slider Maximum="240"
-                    Minimum="1"
-                    Value="{Binding Fps}" />
-            <Label Text="Frames Per Transition:"
-                   TextColor="White" />
-            <Slider Maximum="10000"
-                    Minimum="1"
-                    Value="{Binding FramesPerTransition}" />
-        </StackLayout-->
-    </Grid>
+		<Grid>
+				<!--<controls:GradientView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+																											Animating="{Binding IsAnimating}" Fps="{Binding Fps}" 
+																											FramesPerTransition="{Binding FramesPerTransition}"/>-->
+				<controls:ComplexGradientView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+				<!--<StackLayout Orientation="Vertical">
+						<Label Text="Is Animating:" TextColor="White"/>
+						<Switch IsToggled="{Binding IsAnimating}"	/>
+						<Label Text="Frames Per Second:" TextColor="White" />
+						<Slider Maximum="240" Minimum="1" Value="{Binding Fps}" />
+						<Label Text="Frames Per Transition:" TextColor="White"/>
+						<Slider Maximum="10000" Minimum="1" Value="{Binding FramesPerTransition}" />
+				</StackLayout>-->
+		</Grid>
 </ContentPage>

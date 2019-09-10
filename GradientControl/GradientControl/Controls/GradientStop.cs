@@ -1,72 +1,18 @@
-﻿using GradientControl.ViewModel;
-using SkiaSharp;
-using Xamarin.Forms;
+﻿using SkiaSharp;
 
 namespace GradientControl.Controls
 {
-	public class GradientStop : BaseViewModel
+	public struct GradientStop
     {
-        private float location;
-        public float Location
-        {
-            get
-            {
-                return location;
-            }
-            set
-            {
-                if (location != value)
-                {
-                    location = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
+		public int Location { get; set; }
+		public SKColor Color { get; set; }
+		public float Opacity { get; set; }
 
-        private float opacity;
-        public float Opacity
-        {
-            get
-            {
-                return opacity;
-            }
-            set
-            {
-                if (opacity != value)
-                {
-                    opacity = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
-        private Color color;
-        public Color Color
-        {
-            get
-            {
-                return color;
-            }
-            set
-            {
-                if (color != value)
-                {
-                    color = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
-	    public GradientStop(float location, Color color, float opacity)
+	    public GradientStop(int location, SKColor color, float opacity)
 	    {
 			Location = location;
 			Color = color;
 			Opacity = opacity;
 	    }
-
-        public GradientStop()
-        {
-
-        }
     }
 }

@@ -3,9 +3,16 @@ using System.Runtime.CompilerServices;
 
 namespace GradientControl.ViewModel
 {
-	public class MainPageViewModel : BaseViewModel
+	public class MainPageViewModel : INotifyPropertyChanged
     {
-        private bool isAnimating = true;
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		private bool isAnimating = true;
 		public bool IsAnimating
 		{
 			get
