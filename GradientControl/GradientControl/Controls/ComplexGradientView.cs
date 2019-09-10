@@ -45,16 +45,17 @@ namespace GradientControl.Controls
 
 		public ComplexGradientView()
 		{
-			topLeftColor = Color.Red;
-			topRightColor = Color.Blue;
-			bottomLeftColor = Color.Yellow;
-			bottomRightColor = Color.Green;
-		}
+			topLeftColor = Color.FromRgb(215, 240, 189);
+			topRightColor = Color.FromRgb(83, 174, 219);
+            bottomLeftColor = Color.FromRgb(237, 147, 161);
+            bottomRightColor = Color.FromRgb(252, 223, 202);
+        }
 
 		protected override void OnSizeAllocated(double width, double height)
 		{
-			backgroundGradient = FillBitmapSetPixel(1080, 2280); // Hardcoded for now for S10+
-		}
+            //backgroundGradient = FillBitmapSetPixel(25, 50); // Hardcoded for now for S10+
+            backgroundGradient = FillBitmapSetPixel(1080, 2280); // Hardcoded for now for S10+
+        }
 
 		private GradientStop LerpStop(GradientStop first, GradientStop second, float percentage)
 		{
@@ -78,51 +79,73 @@ namespace GradientControl.Controls
 
 		protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
 		{
-			var canvas = e.Surface.Canvas;
+            Stopwatch start = new Stopwatch();
+            start.Start();
+            var canvas = e.Surface.Canvas;
 			canvas.Clear();
 
 			if (backgroundGradient != null)
 			{
-				canvas.DrawBitmap(backgroundGradient, 0, 0);
-			}
+                /* using (SKPaint paint = new SKPaint())
+                 {
+                     paint.ImageFilter = SKImageFilter.CreateBlur(50, 50);*/
+                //canvas.DrawBitmap(backgroundGradient, new SKRect(0, 0, backgroundGradient.Width, backgroundGradient.Height), new SKRect(0, 0, 828, 1792), paint);
+                canvas.DrawBitmap(backgroundGradient, 0,0);
+                //}
+            }
+            start.Stop();
+            var dur = start.Elapsed;
 		}
 
 		uint MakePixel(byte alpha, byte red, byte green, byte blue) =>
 		(uint)((alpha << 24) | (blue << 16) | (green << 8) | red);
 
 		SKBitmap FillBitmapSetPixel(int width, int height)
-		{
-			Stopwatch start = new Stopwatch();
-			start.Start();
+		{			
 			SKBitmap bitmap = new SKBitmap(width, height);
 			IntPtr basePtr = bitmap.GetPixels();
 
-			double tlR = topLeftColor.R;
-			double tlG = topLeftColor.G;
-			double tlB = topLeftColor.B;
-			double trR = topRightColor.R;
-			double trG = topRightColor.G;
-			double trB = topRightColor.B;
-			double blR = bottomLeftColor.R;
-			double blG = bottomLeftColor.G;
-			double blB = bottomLeftColor.B;
-			double brR = bottomRightColor.R;
-			double brG = bottomRightColor.G;
-			double brB = bottomRightColor.B;
+            double tlR = topLeftColor.R * 255;
+			double tlG = topLeftColor.G * 255;
+			double tlB = topLeftColor.B * 255;
+			double trR = topRightColor.R * 255;
+			double trG = topRightColor.G * 255;
+			double trB = topRightColor.B * 255;
+			double blR = bottomLeftColor.R * 255;
+			double blG = bottomLeftColor.G * 255;
+			double blB = bottomLeftColor.B * 255;
+			double brR = bottomRightColor.R * 255;
+			double brG = bottomRightColor.G * 255;
+			double brB = bottomRightColor.B * 255;
+            /*var elapsed1 = new TimeSpan();
+            var elapsed2 = new TimeSpan();
+            var elapsed3 = new TimeSpan();
+            var elapsed4 = new TimeSpan();*/
 
-			for (int y = 0; y < height; y++)
+            Stopwatch start = new Stopwatch();
+            start.Start();
+
+            for (int y = 0; y < height; y++)
 			{
 				for (int x = 0; x < width; x++)
 				{
+                    //start.Restart();
 					var newColor = BilinearInterpolateColor(tlR, tlG, tlB, trR, trG, trB, blR, blG, blB, brR, brG, brB, (double)x / width, (double)y / height);
-					var pixel = MakePixel(0xFF, (byte)(newColor.r * 255), (byte)(newColor.g * 255), (byte)(newColor.b * 255));
-					IntPtr pixelPtr = basePtr + 4 * (y * width + x);
+                    //elapsed1 += start.Elapsed;
+                    //start.Restart();
+                    var pixel = MakePixel(0xFF, (byte)newColor.r, (byte)newColor.g, (byte)newColor.b);
+                    //elapsed2 += start.Elapsed;
+                    //start.Restart();
+                    IntPtr pixelPtr = basePtr + 4 * (y * width + x);
+                    //elapsed3 += start.Elapsed;
+                    //start.Restart();
 
-					unsafe
+                    unsafe
 					{
 						*(uint*)pixelPtr.ToPointer() = pixel;
 					}
-				}
+                    //elapsed4 += start.Elapsed;
+                }
 			}
 
 			start.Stop();
@@ -133,26 +156,26 @@ namespace GradientControl.Controls
 		private (double r, double g, double b) BilinearInterpolateColor(double tlR, double tlG, double tlB, double trR, double trG, double trB,
 			double blR, double blG, double blB, double brR, double brG, double brB, double fractionX, double fractionY)
 		{
-			var col1 = InterpolateColor(tlR, tlG, tlB, trR, trG, trB, fractionX);
-			var col2 = InterpolateColor(blR, blG, blB, brR, brG, brB, fractionX);
-			return InterpolateColor(col1.r, col1.g, col1.b, col2.r, col2.g, col2.b, fractionY);
+			var col1 = InterpolateColor(tlR, tlG, tlB, trR, trG, trB, fractionX * fractionX);
+			var col2 = InterpolateColor(blR, blG, blB, brR, brG, brB, fractionX * fractionX);
+			return InterpolateColor(col1.r, col1.g, col1.b, col2.r, col2.g, col2.b, fractionY * fractionY);
 		}
 
 		private (double r, double g, double b) InterpolateColor(double r1, double g1, double b1, double r2, double g2, double b2, double fraction)
 		{
-			fraction = Math.Min(fraction, 1f);
-			fraction = Math.Max(fraction, 0f);
+			fraction = fraction < 1D ? fraction : 1D;
+            fraction = fraction > 0D ? fraction : 0D;
 
-			double red = r1 + ((r2 - r1) * fraction);
+            double red = r1 + ((r2 - r1) * fraction);
 			double green = g1 + ((g2 - g1) * fraction);
 			double blue = b1 + ((b2 - b1) * fraction);
 
-			red = Math.Min(red, 255f);
-			red = Math.Max(red, 0f);
-			green = Math.Min(green, 255f);
-			green = Math.Max(green, 0f);
-			blue = Math.Min(blue, 255f);
-			blue = Math.Max(blue, 0f);
+            red = red < 255D ? red : 255D;
+            red = red > 0D ? red : 0D;
+            green = green < 255D ? green : 255D;
+            green = green > 0D ? green : 0D;
+            blue = red < 255D ? blue : 255D;
+            blue = red > 0D ? blue : 0D;
 
 			return (red, green, blue);
 		}
